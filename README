@@ -1,0 +1,34 @@
+Reproduction of VoltDB's reduced performance with large record sizes.
+
+This benchmark inserts records to a VoltDB table as fast as possible
+and measures the throughput and latency of the insert operations.
+
+Usage: ./build/bin/reproduction[options]
+	-h: show this message
+	-o <output log file path>: default reproduction_results.csv
+	-s <DB server>: default 'localhost'
+	-i <measurement interval>: default 2000 msec
+	-t <total execution time>: default 10000 msec
+	-m <message size>: default 2048
+
+We observe a steep performance drop when the record length increases
+from 8KB to 16KB:
+
+./build/bin/reproduction -m 8192
+Total transactions: 112750
+Average throughput: 11142.4
+
+./build/bin/reproduction -m 16384
+Total transactions: 192
+Average throughput: 18.9706
+
+Setup:
+1. Make sure that voltdb runs on localhost.
+2. Build the code:
+      a. mkdir build
+      b. cd build
+      c. cmake ..
+      d. make
+2. Set the "VOLT_HOME" and "VOLTDB_BIN" environment variables.
+3. Insert the table: ./scripts/create_tables.sh
+4. Create the stored procedure: ./scripts/update_voltdb_procedures.sh
